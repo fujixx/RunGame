@@ -1,12 +1,57 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using Cysharp.Threading.Tasks;
+using UniRx;
 
 public class MainService : BaseService
 {
+    [SerializeField] GameObject prefabField;
+    [SerializeField] GameObject parentField;
+
+    private List<Field> _fields;
+    private IDisposable _timerDisposable;
 
     void Start()
     {
-        Debug.Log("Start Main Service");
+        _fields = new();
+
+        ExecuteEveryTenSeconds();
+        _timerDisposable = Observable.Interval(TimeSpan.FromSeconds(2))
+            .Subscribe(_ => ExecuteEveryTenSeconds())
+            .AddTo(this);
+    }
+
+    void OnDestroy()
+    {
+        _timerDisposable.Dispose();
+    }
+
+    private void ExecuteEveryTenSeconds()
+    {
+        Field field = (Field)Utils.AddPrefabGameObject<Field>(parentField, prefabField);
+        _fields.Add(field);
+
+        foreach (Field x in _fields)
+        {
+            MoveBy(x.gameObject, new Vector3(0, 0, -10), 2.0f).Forget();
+        }
+    }
+
+    private async UniTaskVoid MoveBy(GameObject obj, Vector3 deltaPosition, float duration)
+    {
+        Vector3 initialPosition = obj.transform.position;
+        Vector3 targetPosition = initialPosition + deltaPosition;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            obj.transform.position = Vector3.Lerp(initialPosition, targetPosition, elapsedTime / duration);
+            elapsedTime += Time.deltaTime;
+            await UniTask.Yield();
+        }
+
+        obj.transform.position = targetPosition;
     }
 }
