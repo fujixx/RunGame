@@ -5,7 +5,6 @@ using UnityEngine;
 public class CharacterUnitController : MonoBehaviour
 {
     [SerializeField] private float _speed = 2f;
-    [SerializeField] private int _maxRotationSpeed = 600;
     [SerializeField] private int _attack = 10;
     public int Attack => _attack;
     private Rigidbody _rigidbody;
@@ -21,7 +20,15 @@ public class CharacterUnitController : MonoBehaviour
 
         _playerRotation = _transform.rotation;
 
-        _animator.SetBool("walking", true);
+        _animator.SetBool("running", true);
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            _animator.SetTrigger("jump");
+        }
     }
 
     void FixedUpdate()
