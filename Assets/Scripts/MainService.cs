@@ -17,8 +17,8 @@ public class MainService : BaseService
     {
         _fields = new();
 
-        ExecuteEveryTenSeconds();
         _timerDisposable = Observable.Interval(TimeSpan.FromSeconds(2))
+            .StartWith(0)
             .Subscribe(_ => ExecuteEveryTenSeconds())
             .AddTo(this);
     }
@@ -45,13 +45,16 @@ public class MainService : BaseService
         Vector3 targetPosition = initialPosition + deltaPosition;
         float elapsedTime = 0f;
 
-        while (elapsedTime < duration)
+        while (elapsedTime < duration && obj != null)
         {
             obj.transform.position = Vector3.Lerp(initialPosition, targetPosition, elapsedTime / duration);
             elapsedTime += Time.deltaTime;
             await UniTask.Yield();
         }
 
-        obj.transform.position = targetPosition;
+        if (obj != null)
+        {
+            obj.transform.position = targetPosition;
+        }
     }
 }

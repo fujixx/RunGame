@@ -34,8 +34,18 @@ public class CharacterUnitController : MonoBehaviour
     void FixedUpdate()
     {
         float horizontal = Input.GetAxis("Horizontal");
-        Vector3 aim = new Vector3(horizontal, 0, 0).normalized;
-        Vector3 velocity = new Vector3(horizontal, _rigidbody.velocity.y, 0).normalized;
+
+        Vector3 currentPosition = _rigidbody.position;
+        if (currentPosition.x <= -2 && horizontal < 0)
+        {
+            horizontal = 0;
+        }
+        if (currentPosition.x >= 2 && horizontal > 0)
+        {
+            horizontal = 0;
+        }
+
+        Vector3 velocity = new Vector3(horizontal, 0, 0).normalized;
         _rigidbody.velocity = velocity * _speed;
     }
 }
