@@ -9,17 +9,25 @@ public class MainService : BaseService
 {
     [SerializeField] GameObject prefabField;
     [SerializeField] GameObject parentField;
+    [SerializeField] GameObject prefabCube;
 
     private List<Field> _fields;
+    private List<Cube> _cubes;
     private IDisposable _timerDisposable;
 
     void Start()
     {
         _fields = new();
+        _cubes = new();
 
         _timerDisposable = Observable.Interval(TimeSpan.FromSeconds(2))
             .StartWith(0)
-            .Subscribe(_ => ExecuteEveryTenSeconds())
+            .Subscribe(_ => CreateFieldObject())
+            .AddTo(this);
+
+        _timerDisposable = Observable.Interval(TimeSpan.FromSeconds(5))
+            .StartWith(0)
+            .Subscribe(_ => CreateCubeObject())
             .AddTo(this);
     }
 
@@ -28,7 +36,7 @@ public class MainService : BaseService
         _timerDisposable.Dispose();
     }
 
-    private void ExecuteEveryTenSeconds()
+    private void CreateFieldObject()
     {
         Field field = (Field)Utils.AddPrefabGameObject<Field>(parentField, prefabField);
         _fields.Add(field);
@@ -36,6 +44,17 @@ public class MainService : BaseService
         foreach (Field x in _fields)
         {
             MoveBy(x.gameObject, new Vector3(0, 0, -10), 2.0f).Forget();
+        }
+    }
+
+    private void CreateCubeObject()
+    {
+        Cube cube = (Cube)Utils.AddPrefabGameObject<Cube>(parentField, prefabCube);
+        _cubes.Add(cube);
+
+        foreach (Cube x in _cubes)
+        {
+            MoveBy(x.gameObject, new Vector3(0, 0, -25), 5.0f).Forget();
         }
     }
 
