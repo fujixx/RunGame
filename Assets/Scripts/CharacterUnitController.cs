@@ -1,16 +1,31 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using UniRx;
 
 public class CharacterUnitController : MonoBehaviour
 {
     [SerializeField] private float _speed = 2f;
     [SerializeField] private int _attack = 10;
+    [SerializeField] private TextMeshProUGUI _label;
+
     public int Attack => _attack;
     private Rigidbody _rigidbody;
     private Transform _transform;
     private Animator _animator;
     private Quaternion _playerRotation;
+
+    private int _score = 0;
+    public int Score
+    {
+        get { return _score; }
+        set
+        {
+            _score = value;
+            _label.text = _score.ToString();
+        }
+    }
 
     void Start()
     {

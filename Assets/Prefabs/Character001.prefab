@@ -5603,6 +5603,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speed: 2
   _attack: 10
+  _label: {fileID: 8893883959162628128}
 --- !u!1 &100266
 GameObject:
   m_ObjectHideFlags: 0
