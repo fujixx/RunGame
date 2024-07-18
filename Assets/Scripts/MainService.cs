@@ -20,9 +20,16 @@ public class MainService : BaseService
         _fields = new();
         _cubes = new();
 
+        CreateFieldObject(0, 0, 0);
+        CreateFieldObject(0, 0, 10);
+        CreateFieldObject(0, 0, 20);
+        CreateFieldObject(0, 0, 30);
+        CreateFieldObject(0, 0, 40);
+        CreateFieldObject(0, 0, 50);
+        CreateFieldObject(0, 0, 60);
         _timerDisposable = Observable.Interval(TimeSpan.FromSeconds(2))
             .StartWith(0)
-            .Subscribe(_ => CreateFieldObject())
+            .Subscribe(_ => CreateFieldObject(0, 0, 70))
             .AddTo(this);
 
         _timerDisposable = Observable.Interval(TimeSpan.FromSeconds(5))
@@ -36,14 +43,17 @@ public class MainService : BaseService
         _timerDisposable.Dispose();
     }
 
-    private void CreateFieldObject()
+    private void CreateFieldObject(float x, float y, float z)
     {
-        Field field = (Field)Utils.AddPrefabGameObject<Field>(parentField, prefabField);
+        Field field = (Field)Utils.AddPrefabGameObject<Field>(parentField, prefabField, x, y, z);
         _fields.Add(field);
 
-        foreach (Field x in _fields)
+        foreach (Field f in _fields)
         {
-            MoveBy(x.gameObject, new Vector3(0, 0, -10), 2.0f).Forget();
+            if (f != null)
+            {
+                MoveBy(f.gameObject, new Vector3(0, 0, -10), 2.0f).Forget();
+            }
         }
     }
 
@@ -52,9 +62,12 @@ public class MainService : BaseService
         Cube cube = (Cube)Utils.AddPrefabGameObject<Cube>(parentField, prefabCube);
         _cubes.Add(cube);
 
-        foreach (Cube x in _cubes)
+        foreach (Cube c in _cubes)
         {
-            MoveBy(x.gameObject, new Vector3(0, 0, -25), 5.0f).Forget();
+            if (c != null)
+            {
+                MoveBy(c.gameObject, new Vector3(0, 0, -25), 5.0f).Forget();
+            }
         }
     }
 

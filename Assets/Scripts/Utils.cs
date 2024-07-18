@@ -7,7 +7,13 @@ public static class Utils
 {
     public static T AddPrefabGameObject<T>(GameObject parent, GameObject prefab)
     {
+        return AddPrefabGameObject<T>(parent, prefab, 0f, 0f, 0f);
+    }
+
+    public static T AddPrefabGameObject<T>(GameObject parent, GameObject prefab, float x, float y, float z)
+    {
         GameObject go = GameObject.Instantiate(prefab, parent.transform);
+        go.transform.localPosition = new Vector3(x, y, z);
         return (T)(object)go.GetComponent<T>();
     }
 
